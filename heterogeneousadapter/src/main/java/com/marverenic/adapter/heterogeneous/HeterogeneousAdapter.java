@@ -120,7 +120,7 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
      * @param position The position in the entire data set to lookup a coordinate of
      * @param coordinate A {@code Coordinate} object to put the result into
      */
-    private void lookupCoordinates(int position, Coordinate coordinate) {
+    protected final void lookupCoordinates(int position, Coordinate coordinate) {
         int runningTotal = 0;
         for (int i = 0; i < mSections.size(); i++) {
             int sectionTotal = mSections.get(i).getSize(this);

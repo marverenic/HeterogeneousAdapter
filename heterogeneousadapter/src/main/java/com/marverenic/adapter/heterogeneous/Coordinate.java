@@ -6,7 +6,7 @@ package com.marverenic.adapter.heterogeneous;
  *
  * @see HeterogeneousAdapter#lookupCoordinates(int, Coordinate)
  */
-final class Coordinate {
+public final class Coordinate {
 
     public static final int UNKNOWN_POSITION = -1;
 
