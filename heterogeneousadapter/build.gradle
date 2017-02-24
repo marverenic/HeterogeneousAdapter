@@ -13,7 +13,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
     }
     buildTypes {
         release {
@@ -38,10 +38,9 @@ bintray {
         name = 'com.marverenic.heterogeneousadapter'
 
         version {
-            name = '1.0.0'
-            desc = ''
+            name = '1.0'
             released  = new Date()
-            vcsTag = '1.0.0'
+            vcsTag = 'v1.0'
         }
 
         licenses = ['Apache-2.0']
