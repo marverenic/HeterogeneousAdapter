@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.marverenic.adapter.heterogeneous.HeterogeneousAdapter;
+import com.marverenic.adapter.HeterogeneousAdapter;
 import com.marverenic.demo.heterogeneous.section.DynamicEntrySection;
 import com.marverenic.demo.heterogeneous.section.DynamicHeaderSection;
 import com.marverenic.demo.heterogeneous.section.EntrySection;

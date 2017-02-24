@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.marverenic.adapter.heterogeneous.EnhancedViewHolder;
-import com.marverenic.adapter.heterogeneous.HeterogeneousAdapter;
+import com.marverenic.adapter.EnhancedViewHolder;
+import com.marverenic.adapter.HeterogeneousAdapter;
 import com.marverenic.demo.heterogeneous.R;
 
 import java.util.List;

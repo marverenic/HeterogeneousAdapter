@@ -1,4 +1,4 @@
-package com.marverenic.adapter.heterogeneous;
+package com.marverenic.adapter;
 
 /**
  * An ordered pair of integers used by {@link HeterogeneousAdapter} to lookup the index of data

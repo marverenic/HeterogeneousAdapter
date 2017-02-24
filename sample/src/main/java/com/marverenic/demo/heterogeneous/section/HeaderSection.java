@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.marverenic.demo.heterogeneous.R;
-import com.marverenic.adapter.heterogeneous.EnhancedViewHolder;
-import com.marverenic.adapter.heterogeneous.HeterogeneousAdapter;
+import com.marverenic.adapter.EnhancedViewHolder;
+import com.marverenic.adapter.HeterogeneousAdapter;
 
 public class HeaderSection extends HeterogeneousAdapter.SingletonSection<String> {
 

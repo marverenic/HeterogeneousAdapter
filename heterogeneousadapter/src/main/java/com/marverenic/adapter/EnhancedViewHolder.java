@@ -1,4 +1,4 @@
-package com.marverenic.adapter.heterogeneous;
+package com.marverenic.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

@@ -1,6 +1,6 @@
 package com.marverenic.demo.heterogeneous.section;
 
-import com.marverenic.adapter.heterogeneous.HeterogeneousAdapter;
+import com.marverenic.adapter.HeterogeneousAdapter;
 
 import java.util.List;
 
