@@ -138,7 +138,7 @@ public class DragDropAdapter extends HeterogeneousAdapter {
         }
 
         @Override
-        public int getItemCount() {
+        public int getItemCount(HeterogeneousAdapter adapter) {
             return mData.size();
         }
 

@@ -26,7 +26,7 @@ public abstract class EmptyState {
      * guaranteed to never change)
      * @param emptyStateView The view to update
      */
-    protected abstract void onUpdate(View emptyStateView);
+    public abstract void onUpdate(View emptyStateView);
 
     /**
      * Wraps Views created by {@link #onCreateView(RecyclerView.Adapter, ViewGroup)} in an
@@ -35,8 +35,8 @@ public abstract class EmptyState {
      * @param parent The ViewGroup that this ViewHolder will be attached to
      * @return A ViewHolder used to indicate that the data set is empty
      */
-    protected final EmptyViewHolder onCreateViewHolder(
-            RecyclerView.Adapter<EnhancedViewHolder> adapter, ViewGroup parent) {
+    public final EmptyViewHolder createViewHolder(RecyclerView.Adapter<EnhancedViewHolder> adapter,
+                                                  ViewGroup parent) {
         return new EmptyViewHolder(onCreateView(adapter, parent), this);
     }
 
@@ -44,13 +44,13 @@ public abstract class EmptyState {
      * Implementation of {@link EnhancedViewHolder} used to wrap an empty state view to be used with
      * a {@link RecyclerView}
      */
-    static final class EmptyViewHolder extends EnhancedViewHolder<Void> {
+    public static final class EmptyViewHolder extends EnhancedViewHolder<Void> {
 
         private EmptyState mState;
 
         /**
          * Instances are only created in
-         * {@link EmptyState#onCreateViewHolder(RecyclerView.Adapter, ViewGroup)}
+         * {@link EmptyState#createViewHolder(RecyclerView.Adapter, ViewGroup)}
          * @param itemView The View of the empty state
          * @param state The EmptyState that created this ViewHolder which will later be used as a
          *              callback to update this ViewHolder

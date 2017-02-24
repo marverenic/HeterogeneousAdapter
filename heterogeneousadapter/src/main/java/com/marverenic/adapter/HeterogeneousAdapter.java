@@ -24,6 +24,10 @@ import java.util.List;
  */
 public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolder> {
 
+    private static final int NO_ID = (int) RecyclerView.NO_ID;
+
+    private static final long EMPTY_STATE_ID = -2;
+
     /**
      * Used in {@link #getItemViewType(int)} to denote that the empty state should be shown
      */
@@ -34,14 +38,15 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
     private EmptyState mEmptyState;
 
     /**
-     * The number of times {@link #addSection(Section, int)} and {@link #addSection(Section)} is
-     * called. This value is used to generate item IDs used with
+     * The number of times {@link #addSection(Section)} and {@link #addSection(Section, int)} have
+     * been called. This value is used to generate item IDs used with
      * {@link RecyclerView.Adapter#getItemViewType(int)}
      */
     private int mSectionBindingCount;
 
     /**
-     * A reused Point to avoid GC overhead when calling {@link #lookupCoordinates(int, Coordinate)}
+     * A reused Coordinate to avoid GC overhead when calling
+     * {@link #lookupCoordinates(int, Coordinate))
      */
     private Coordinate mCoordinate;
 
@@ -63,8 +68,7 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
     }
 
     private int getNextSectionId() {
-        mSectionBindingCount++;
-        return mSectionBindingCount;
+        return ++mSectionBindingCount;
     }
 
     /**
@@ -113,39 +117,39 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
     }
 
     /**
-     * Converts a position in the entire data set to a coordinate in the section list. This method
+     * Converts a position in the entire data set to a Coordinate in the section list. This method
      * returns two values into the provided {@code Coordinate} so that it can be reused to save GC
      * overhead.
      *
      * @param position The position in the entire data set to lookup a coordinate of
-     * @param coordinate A {@code Coordinate} object to put the result into
+     * @param coordinate {@code Coordinate} object to put the result into
      */
     protected final void lookupCoordinates(int position, Coordinate coordinate) {
         int runningTotal = 0;
         for (int i = 0; i < mSections.size(); i++) {
-            int sectionTotal = mSections.get(i).getSize(this);
+            int sectionTotal = mSections.get(i).getItemCount(this);
             if (position < runningTotal + sectionTotal) {
                 coordinate.setSection(i);
                 coordinate.setItemIndex(position - runningTotal);
                 return;
             }
-            runningTotal += mSections.get(i).getSize(this);
+            runningTotal += sectionTotal;
         }
         coordinate.clear();
     }
 
     /**
-     * Calculates the number of views contained in sections preceding a given section
+     * Calculates the number of views contained in sections proceeding a given section
      * @param typeId The ID of the section to get the leading view count of
      * @return The number of views in this list that are above the first view in the given section
      */
     protected int getLeadingViewCount(int typeId) {
         int count = 0;
-        for (Section s : mSections) {
-            if (s.getTypeId() == typeId) {
+        for (Section section : mSections) {
+            if (section.getTypeId() == typeId) {
                 break;
             }
-            count += s.getSize(this);
+            count += section.getItemCount(this);
         }
         return count;
     }
@@ -163,26 +167,28 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
 
     @Override
     public long getItemId(int position) {
+        if (getDataSize() == 0 && mEmptyState != null) {
+            return EMPTY_STATE_ID;
+        }
+
         lookupCoordinates(position, mCoordinate);
+        int section = mCoordinate.getSection();
         int item = mCoordinate.getItemIndex();
-        Section section = mSections.get(mCoordinate.getSection());
 
-        int givenId = section.getId(item);
-        int sectionId = section.getTypeId();
+        int givenId = mSections.get(section).getId(item);
+        int sectionId = mSections.get(section).getTypeId();
 
-        if (givenId != RecyclerView.NO_ID) {
-            // To make sure that IDs are unique among data items in all sections, set the first half
-            // of the return value to be the unique ID of its corresponding section
-            return (long) sectionId << 32 | givenId;
-        } else {
+        if (givenId == NO_ID) {
             return RecyclerView.NO_ID;
+        } else {
+            return (long) sectionId << 32 | givenId;
         }
     }
 
     @Override
     public EnhancedViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == EMPTY_TYPE) {
-            return mEmptyState.onCreateViewHolder(this, parent);
+            return mEmptyState.createViewHolder(this, parent);
         }
         return mSectionIdMap.get(viewType).createViewHolder(this, parent);
     }
@@ -208,10 +214,10 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
      *
      * @return The number of visible data entries in all sections
      */
-    private int getDataSize() {
+    protected int getDataSize() {
         int sum = 0;
-        for (Section section : mSections) {
-            sum += section.getSize(this);
+        for (Section s : mSections) {
+            sum += s.getItemCount(this);
         }
         return sum;
     }
@@ -228,29 +234,41 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
     }
 
     /**
-     * Holds a group of sequential items of the same type to be displayed in a
+     * Gets the index of a section in this adapter. Equality is checked using the implementation of
+     * {@link Object#equals(Object)}, which defaults to checking references
+     * @param section The section to lookup an index for
+     * @return The index of this section relative to other sections in the adapter, or {@code -1}
+     *         if it wasn't found in this adapter.
+     */
+    public int getSectionIndex(Section<?> section) {
+        for (int i = 0; i < mSections.size(); i++) {
+            if (mSections.get(i).equals(section)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Gets the section at a given index
+     * @param index The index to get the attached section of
+     * @return The section at the specified index
+     */
+    public Section getSection(int index) {
+        return mSections.get(index);
+    }
+
+    /**
+     * Holds a group of sequential items if the same type to be displayed in a
      * {@link HeterogeneousAdapter}. Sections act as {@link RecyclerView.Adapter}s with the
      * condition that they may only have one type of ItemView
      * @param <Type> The type of data that this Section holds
-     * @see ListSection
-     * @see SingletonSection
+     * @see HeterogeneousAdapter.ListSection
+     * @see HeterogeneousAdapter.SingletonSection
      */
     public static abstract class Section<Type> {
 
         private int mTypeId;
-
-        public Section () {
-
-        }
-
-        /**
-         * Used internally by {@link HeterogeneousAdapter} to set a unique ID for this section.
-         * @param id The ID to use for this Section when {@link RecyclerView} calls
-         *           {@link RecyclerView.Adapter#getItemViewType(int)}
-         */
-        private void setTypeId(int id) {
-            mTypeId = id;
-        }
 
         /**
          * Creates a ViewHolder for the {@link HeterogeneousAdapter} this Section is attached to
@@ -266,10 +284,10 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
          * Get the ID of an item in the data set
          * @param position The index in the data set that an ID has been requested for
          * @return The ID of this item or {@link RecyclerView#NO_ID}
-         * @see android.support.v7.widget.RecyclerView.Adapter#getItemId(int)
+         * @see RecyclerView.Adapter#getItemId(int)
          */
         public int getId(int position) {
-            return (int) RecyclerView.NO_ID;
+            return NO_ID;
         }
 
         /**
@@ -290,14 +308,14 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
          * @return The number of visible items that are held by this section
          */
         public final int getSize(HeterogeneousAdapter adapter) {
-            return showSection(adapter) ? getItemCount() : 0;
+            return showSection(adapter) ? getItemCount(adapter) : 0;
         }
 
         /**
          * Gets the number of items held by this section
          * @return The number of items in this section's backing data set
          */
-        public abstract int getItemCount();
+        public abstract int getItemCount(HeterogeneousAdapter adapter);
 
         /**
          * Returns an item in the data set used to populate a ViewHolder
@@ -305,6 +323,15 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
          * @return The item at the specified index in this Section's data set
          */
         public abstract Type get(int position);
+
+        /**
+         * Used internally by {@link HeterogeneousAdapter} to set a unique ID for this section.
+         * @param id The ID to use for this Section when {@link RecyclerView} calls
+         *           {@link RecyclerView.Adapter#getItemViewType(int)}
+         */
+        private void setTypeId(int id) {
+            mTypeId = id;
+        }
 
         /**
          * @return The item type ID as used by
@@ -336,8 +363,8 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
         }
 
         @Override
-        public final int getItemCount() {
-            return 1;
+        public final int getItemCount(HeterogeneousAdapter adapter) {
+            return showSection(adapter) ? 1 : 0;
         }
 
         @Override
@@ -348,7 +375,8 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
     }
 
     /**
-     * An extension of {@link Section} used to show a list of items of the same type
+     * An extension of {@link HeterogeneousAdapter.Section} used to show a list of items of the
+     * same type
      * @param <Type> The class of the data that this Section shows.
      */
     public static abstract class ListSection<Type> extends Section<Type> {
@@ -379,8 +407,8 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
         }
 
         @Override
-        public final int getItemCount() {
-            return mData.size();
+        public final int getItemCount(HeterogeneousAdapter adapter) {
+            return showSection(adapter) ? mData.size() : 0;
         }
 
         @Override

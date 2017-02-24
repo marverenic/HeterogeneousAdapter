@@ -14,16 +14,16 @@ public final class Coordinate {
     private int mItemIndex;
 
     public Coordinate() {
-        clear();
+        this(UNKNOWN_POSITION, UNKNOWN_POSITION);
     }
 
-    public Coordinate(int section, int sectionIndex) {
-        setSection(section);
-        setItemIndex(sectionIndex);
+    public Coordinate(int section, int itemIndex) {
+        mSection = section;
+        mItemIndex = itemIndex;
     }
 
     /**
-     * Resets this coordinate's values to the default {@link #UNKNOWN_POSITION}
+     * Resets this Coordinate's values to the default {@link #UNKNOWN_POSITION}
      */
     public void clear() {
         setSection(UNKNOWN_POSITION);
@@ -31,14 +31,14 @@ public final class Coordinate {
     }
 
     /**
-     * @param section The section index to set this coordinate to point to
+     * @param section The section index to update the Coordinate to point to
      */
     public void setSection(int section) {
         mSection = section;
     }
 
     /**
-     * @param itemIndex The index within a section's data to set this coordinate to point to
+     * @param itemIndex The item within a section's data to set this Coordinate to point to
      */
     public void setItemIndex(int itemIndex) {
         mItemIndex = itemIndex;
@@ -52,10 +52,9 @@ public final class Coordinate {
     }
 
     /**
-     * @return The index within a section's data that this coordinate points to
+     * @return The item index within a section's data that this coordinate points to
      */
     public int getItemIndex() {
         return mItemIndex;
     }
-
 }
