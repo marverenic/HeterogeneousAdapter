@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Heterogeneous Adapter</string>
+    <string name="message_intro">
+        Heterogeneous Adapter is an extension of RecyclerView Adapter intended to make creating
+        lists with different types of items more straightforward. To accomplish this, Heterogeneous
+        Adapter uses Sections to divide items into groups of the same type. Sections behave just
+        like a separate RecyclerView Adapter, with the condition that they can only have one type of
+        item view. Once attached to a Heterogeneous Adapter, Sections display one after another in
+        the order they were added (or the specified order if set manually).
+
+        \n\nThis abstraction allows many behaviors that would normally be tedious and generate
+        significant amounts of unreadable boilerplate code to be implemented with minimal effort.
+        For example, the  “Dynamic Entries” header below is only visible when its corresponding
+        Section has content.
+
+        \n\nAnother feature not shown here is that Heterogeneous Adapter includes an Empty State
+        implementation that can be added just as easily as it is to create a new Section.
+    </string>
+    <string name="message_footer">
+        &#9829;, Marverenic.
+    </string>
+    <string name="action_delete">Delete</string>
+</resources>
