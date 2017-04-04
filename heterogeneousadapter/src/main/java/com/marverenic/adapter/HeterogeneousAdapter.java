@@ -362,6 +362,15 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
             mData = data;
         }
 
+        /**
+         * Replace the current data item. Callers are responsible for calling
+         * {@link RecyclerView.Adapter#notifyDataSetChanged()} or an equivalent method
+         * @param data The new data item to show in this Section
+         */
+        public void setData(Type data) {
+            mData = data;
+        }
+
         @Override
         public final int getItemCount(HeterogeneousAdapter adapter) {
             return showSection(adapter) ? 1 : 0;
