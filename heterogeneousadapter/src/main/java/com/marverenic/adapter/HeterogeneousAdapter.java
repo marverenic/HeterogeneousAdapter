@@ -275,7 +275,7 @@ public class HeterogeneousAdapter extends RecyclerView.Adapter<EnhancedViewHolde
          * @param adapter the Adapter requesting a new ViewHolder
          * @param parent the ViewGroup that this ViewHolder will be placed into
          * @return A valid ViewHolder that may be used for items in this Section
-         * @see {@link RecyclerView.Adapter#createViewHolder(ViewGroup, int)}
+         * @see RecyclerView.Adapter#createViewHolder(ViewGroup, int)
          */
         public abstract EnhancedViewHolder<Type> createViewHolder(HeterogeneousAdapter adapter,
                                                                   ViewGroup parent);
