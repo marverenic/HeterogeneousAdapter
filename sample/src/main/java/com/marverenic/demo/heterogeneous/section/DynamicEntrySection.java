@@ -23,7 +23,7 @@ public class DynamicEntrySection extends HeterogeneousAdapter.ListSection<String
 
     @Override
     public EnhancedViewHolder<String> createViewHolder(HeterogeneousAdapter adapter,
-                                                       ViewGroup parent) {
+                                                       ViewGroup parent, int itemType) {
         return ViewHolder.create(adapter, getData(), parent);
     }
 

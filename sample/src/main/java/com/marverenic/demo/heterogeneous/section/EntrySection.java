@@ -20,7 +20,7 @@ public class EntrySection extends HeterogeneousAdapter.ListSection<String> {
 
     @Override
     public EnhancedViewHolder<String> createViewHolder(HeterogeneousAdapter adapter,
-                                                       ViewGroup parent) {
+                                                       ViewGroup parent, int itemType) {
         return ViewHolder.create(parent);
     }
 
