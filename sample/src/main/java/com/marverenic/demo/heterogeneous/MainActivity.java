@@ -6,9 +6,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.marverenic.adapter.HeterogeneousAdapter;
+import com.marverenic.adapter.DragDropAdapter;
 import com.marverenic.demo.heterogeneous.section.DynamicEntrySection;
 import com.marverenic.demo.heterogeneous.section.DynamicHeaderSection;
+import com.marverenic.demo.heterogeneous.section.VarietyTypeAndDraggableSection;
 import com.marverenic.demo.heterogeneous.section.EntrySection;
 import com.marverenic.demo.heterogeneous.section.HeaderSection;
 import com.marverenic.demo.heterogeneous.section.TextSection;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private HeterogeneousAdapter mAdapter;
+    private DragDropAdapter mAdapter;
 
     private List<String> mDynamicEntries;
     private int mDynamicCount;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.list);
-        mAdapter = new HeterogeneousAdapter();
+        mAdapter = new DragDropAdapter();
 
         mDynamicEntries = new ArrayList<>(Arrays.asList("Entry 1", "Entry 2"));
         mDynamicCount = mDynamicEntries.size();
@@ -43,11 +44,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mAdapter.addSection(new DynamicHeaderSection("Dynamic entries", mDynamicEntries));
         mAdapter.addSection(new DynamicEntrySection(mDynamicEntries));
+
+        mAdapter.addSection(new HeaderSection("Variety type and draggable section"));
+        mAdapter.setDragSection(new VarietyTypeAndDraggableSection(new ArrayList<>(Arrays.asList(
+                "Red", "Blue", "Red", "Blue"))));
+
+
         mAdapter.addSection(new HeaderSection("Footer"));
         mAdapter.addSection(new TextSection(getString(R.string.message_footer)));
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.attach(mRecyclerView);
 
         findViewById(R.id.add_button).setOnClickListener(this);
     }

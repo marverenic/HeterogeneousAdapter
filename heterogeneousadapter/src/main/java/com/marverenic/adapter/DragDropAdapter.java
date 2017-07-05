@@ -21,6 +21,11 @@ public class DragDropAdapter extends HeterogeneousAdapter {
         mHandler = new Handler();
     }
 
+    public DragDropAdapter(boolean shareItemType) {
+        super(shareItemType);
+        mHandler = new Handler();
+    }
+
     /**
      * Attach this adapter to a View. You MUST call this method if you want drag and drop to work.
      * This method will call {@link RecyclerView#setAdapter(RecyclerView.Adapter)} in addition to
@@ -37,7 +42,7 @@ public class DragDropAdapter extends HeterogeneousAdapter {
     public EnhancedViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final EnhancedViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
 
-        if (mDragSection != null && viewType == mDragSection.getTypeId()) {
+        if (mDragSection != null && getSectionByViewType(viewType).equals(mDragSection)) {
             View handle = viewHolder.itemView.findViewById(mDragSection.getDragHandleId());
             handle.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -68,14 +73,24 @@ public class DragDropAdapter extends HeterogeneousAdapter {
         return this;
     }
 
+    public DragSection detactDragSection() {
+        DragSection dragSection = mDragSection;
+        if (dragSection == null) {
+            throw new IllegalStateException("DragSection == null");
+        }
+        int index = getSectionIndex(dragSection);
+        if (index > 0) removeSection(index);
+        return dragSection;
+    }
+
     private void drag(int from, int to) {
-        int leadingViews = getLeadingViewCount(mDragSection.getTypeId());
+        int leadingViews = getLeadingViewCount(mDragSection);
         mDragSection.onDrag(from - leadingViews, to - leadingViews);
         notifyItemMoved(from, to);
     }
 
     private void drop(RecyclerView.ViewHolder viewHolder) {
-        int leadingViews = getLeadingViewCount(mDragSection.getTypeId());
+        int leadingViews = getLeadingViewCount(mDragSection);
         mDragSection.onDrop(
                 ((DragMarker) viewHolder.itemView.getTag()).from - leadingViews,
                 viewHolder.getAdapterPosition() - leadingViews);
@@ -167,7 +182,10 @@ public class DragDropAdapter extends HeterogeneousAdapter {
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                               RecyclerView.ViewHolder target) {
-            if (viewHolder.getItemViewType() == target.getItemViewType()) {
+            Section currentSection = mAdapter.getSectionByViewType(viewHolder.getItemViewType());
+            Section targetSection = mAdapter.getSectionByViewType(target.getItemViewType());
+            if (currentSection == targetSection) {
+                // only allow drag drop items within the same section.
                 mAdapter.drag(
                         viewHolder.getAdapterPosition(),
                         target.getAdapterPosition());
