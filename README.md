@@ -1,8 +1,15 @@
-# HeterogeneousAdapter
+# HeterogeneousAdapter (Deprecated)
+
+âš  **HeterogeneousAdapter is deprecated** as of January 26, 2020.
+This library will continue to work, but will not receive support or updates.
+Consider using [airbnb/epoxy](https://github.com/airbnb/epoxy) instead.
+[Read more](https://andrewbailey.dev/post/2020/01/26/rebranding-marverenic).
+
+---
 
 [![Download](https://api.bintray.com/packages/marverenic/HeterogeneousAdapter/com.marverenic.heterogeneousadapter/images/download.svg)](https://bintray.com/marverenic/HeterogeneousAdapter/com.marverenic.heterogeneousadapter/_latestVersion)
 
-HeterogeneousAdapter is an implementation of `RecyclerView.Adapter` designed for easily creating lists with different views for different types of data. In a regular RecyclerView Adapter, you would have to override `getItemViewType()`, `onCreateViewHolder()`, and `onBindViewHolder()` manually to deal with combined data sets. For lists that have one or two data types this is no big deal, but when several different data types need to be displayed in a single list, `onBindViewHolder` can become a tangled mess to figure out the correct indices for data in a particular collection – in particular if the list has something like headers that disappear when their corresponding section is empty.
+HeterogeneousAdapter is an implementation of `RecyclerView.Adapter` designed for easily creating lists with different views for different types of data. In a regular RecyclerView Adapter, you would have to override `getItemViewType()`, `onCreateViewHolder()`, and `onBindViewHolder()` manually to deal with combined data sets. For lists that have one or two data types this is no big deal, but when several different data types need to be displayed in a single list, `onBindViewHolder` can become a tangled mess to figure out the correct indices for data in a particular collection ï¿½ in particular if the list has something like headers that disappear when their corresponding section is empty.
 
 HeterogeneousAdapter completely removes the need to override these methods. This is done by separating the data into Sections. Each Section behaves very much like a regular RecyclerView adapter, but each Section can only have one view type. Sections cannot be interwoven with each other. Heterogeneous Adapter also includes an EmptyState interface.
 
@@ -39,10 +46,10 @@ mRecyclerView.setAdapter(adapter);
 ```
 
 ## Enhanced ViewHolder
-HeterogeneousAdapter uses a subclass of `RecyclerView.ViewHolder` with one additional method – `onUdpdate(T data, int position)`. This puts the responsibility of updating views on the ViewHolder instead of the adapter, which removes the need for an `onBindViewHolder` method in the Section class.
+HeterogeneousAdapter uses a subclass of `RecyclerView.ViewHolder` with one additional method ï¿½ `onUdpdate(T data, int position)`. This puts the responsibility of updating views on the ViewHolder instead of the adapter, which removes the need for an `onBindViewHolder` method in the Section class.
 
 ## Creating Sections
-Each Section acts like a RecyclerView with one kind of item. Many of the methods required to implement a Section are the same from RecyclerView.Adapter. There are two basic types of Sections that are available out-of-the-box – List Sections and Singleton Sections.
+Each Section acts like a RecyclerView with one kind of item. Many of the methods required to implement a Section are the same from RecyclerView.Adapter. There are two basic types of Sections that are available out-of-the-box ï¿½ List Sections and Singleton Sections.
 
 ### List Sections
 List Sections are a generic Section designed to be used on data that is stored in a `List`. This class has one abstract method, `createViewHolder`, which behaves exactly like `RecyclerView.Adapter.createViewHolder()`. The Section holds a reference to the data items, which HeterogeneousAdapter will automatically send to the ViewHolder.
